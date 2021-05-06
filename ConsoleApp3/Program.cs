@@ -13,6 +13,10 @@ using System.IO;
 using PdfReader = iTextSharp.text.pdf.PdfReader;
 using System.Text;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Reflection.Metadata;
+using Spire.Pdf.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ConsoleApp3
 {
@@ -20,78 +24,84 @@ namespace ConsoleApp3
     {
         static void Main(string[] args)
         {
-            //Create and add text in PDF File Also Add the signature
-            //const string Name = "Ali";
+
+           
+            #region Create and add text in PDF File Also Add the signature
+            const string Name = "Verifyied By RegistreRH";
+            var image = XImage.FromFile("verify.pdf");
+            PdfCertificate cert = new PdfCertificate("FalconITConsulting.pfx", "12as34df56gh");
+            Certificate certificate = new Certificate();
+            certificate.IssuerName = cert.IssuerName;
+            certificate.Subject = cert.Subject;
+            certificate.SerialNumber = cert.SerialNumber;
+            certificate.ThumbPrint = cert.Thumbprint;
+            certificate.Version = cert.Version;
+            certificate.PublicKey = cert.PublicKey;
+            certificate.certStartDate = cert.NotBefore;
+            certificate.certEndDate = cert.NotAfter;
+            Console.WriteLine(certificate);
+            //var Subejct = cert.Subject;
             //string Age = "25";
             //string Address = "Jinnah gate pasrur";
             //string newLine = "\r\n";
             //string sample = "Signature:" + Name + " " + newLine + "Age:" + Age + " " + newLine + " Address: " + Address + " " + newLine;
-            //const string text =
+            const string text = "PDF Descrition you can provide html and then convert it into PDF";
+            GlobalFontSettings.FontResolver = new FontResolver();
+            AnnotationCopyingType acp = AnnotationCopyingType.DoNotCopy;
+            PdfSharpCore.Pdf.PdfPage pdfp = new PdfSharpCore.Pdf.PdfPage();
+            var document = new PdfSharpCore.Pdf.PdfDocument();
+            var page = document.AddPage(pdfp, acp);
+            var gfx = XGraphics.FromPdfPage(page);
+            var font = new XFont("OpenSans", 10, XFontStyle.Bold);
+            XTextFormatter tf = new XTextFormatter(gfx);
+            XRect rect = new XRect(40, 100, 480, 220);
+            double width = image.PixelWidth * 5.9 / image.HorizontalResolution;
+            double height = image.PixelHeight * 5.9 / image.HorizontalResolution;
+            //Draw the Image of Verify
+            gfx.DrawImage(image, 450, page.Height - 60, width, height);
+            //Draw the Text of Document
+            tf.DrawString(text, font, XBrushes.Black, rect, XStringFormats.TopLeft);
+            //Draw the Verification Signature of RegistreRH
+            gfx.DrawString( Name, font, XBrushes.Black, new XRect(10, 10, page.Width-20, page.Height-50),XStringFormats.BottomRight);
+            document.Save("test3.pdf");
+            #endregion
 
-            //    "Facin exeraessisit la consenim iureet dignibh eu facilluptat vercil dunt autpat. " +
+            //#region verification PDF Start
+            //string fileName = @"C:\Users\falcon\source\repos\ConsoleApp3\ConsoleApp3\bin\Debug\netcoreapp3.1\test.pdf";
+            //string searthText = "Ali";
+            //string searchAge = "25";
+            //string searchAddress = "Jinnah gate pasrur";
+            //List<int> pages = new List<int>();
+            //if (File.Exists(fileName))
+            //{
+            //    PdfReader pdfReader = new PdfReader(fileName);
+            //    for (int pageIndex = 1; pageIndex <= pdfReader.NumberOfPages; pageIndex++)
+            //    {
+            //        ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
 
-            //    "Ecte magna faccum dolor sequisc iliquat, quat, quipiss equipit accummy niate magna " +
+            //        string currentPageText = PdfTextExtractor.GetTextFromPage(pdfReader, pageIndex, strategy);
+            //        if (currentPageText.Contains(searthText) && currentPageText.Contains(searchAge) && currentPageText.Contains(searchAddress))
+            //        {
+            //            Console.WriteLine("True");
+            //            //pages.Add(page);
+            //        }
+            //        else
+            //        {
+            //            Console.WriteLine("false");
+            //        }
+            //    }
+            //    pdfReader.Close();
+            //}
+            //#endregion
 
-            //    "facil iure eraesequis am velit, quat atis dolore dolent luptat nulla adio odipissectet " +
-
-            //    "lan venis do essequatio conulla facillandrem zzriusci bla ad minim inis nim velit eugait ";
-
-            //GlobalFontSettings.FontResolver = new FontResolver();
-            //AnnotationCopyingType acp = AnnotationCopyingType.DoNotCopy;
-            //PdfSharpCore.Pdf.PdfPage pdfp = new PdfSharpCore.Pdf.PdfPage();
-
-            //var document = new PdfSharpCore.Pdf.PdfDocument();
-            //var page = document.AddPage(pdfp, acp);
-            //var gfx = XGraphics.FromPdfPage(page);
-            //var font = new XFont("OpenSans", 10, XFontStyle.Bold);
-            //XTextFormatter tf = new XTextFormatter(gfx);
-            //XRect rect = new XRect(40, 100, 480, 220);
-            //gfx.DrawRectangle(XBrushes.SeaShell, rect);
-            //tf.DrawString(text, font, XBrushes.Black, rect, XStringFormats.TopLeft);
-
-            //gfx.DrawString("Name:"+Name, font, XBrushes.Black, new XRect(20, 20, page.Width,0), XStringFormats.TopLeft);
-            //gfx.DrawString("Age:"+Age, font, XBrushes.Black, new XRect(20, 35, page.Width,0), XStringFormats.TopLeft);
-            //gfx.DrawString("Address"+Address, font, XBrushes.Black, new XRect(20, 50, page.Width,0), XStringFormats.TopLeft);
-            //document.Save("test.pdf");
-            //Create and add text in PDF File Also Add the signature End 
-
-
-
-            //verification PDF Start
-            string fileName = @"C:\Users\falcon\source\repos\ConsoleApp3\ConsoleApp3\bin\Debug\netcoreapp3.1\test.pdf";
-            string searthText = "Alis";
-            string searchAge = "25";
-            string searchAddress = "Jinnah gate pasrur";
-            List<int> pages = new List<int>();
-            if (File.Exists(fileName))
-            {
-                PdfReader pdfReader = new PdfReader(fileName);
-                for (int pageIndex = 1; pageIndex <= pdfReader.NumberOfPages; pageIndex++)
-                {
-                    ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-
-                    string currentPageText = PdfTextExtractor.GetTextFromPage(pdfReader, pageIndex, strategy);
-                    if (currentPageText.Contains(searthText) && currentPageText.Contains(searchAge) && currentPageText.Contains(searchAddress))
-                    {
-                        Console.WriteLine("True");
-                        //pages.Add(page);
-                    }
-                    else
-                    {
-                        Console.WriteLine("false");
-                    }
-                }
-                pdfReader.Close();
-            }
-            //verification PDF End
-
-            //Show the Text of PDF File
+            //#region Show the Text of PDF File
             //var ExtractedPDFToString = ExtractTextFromPdf(@"C:\Users\falcon\source\repos\ConsoleApp3\ConsoleApp3\bin\Debug\netcoreapp3.1\test.pdf");
             //Console.WriteLine(ExtractedPDFToString);
+            //#endregion
 
 
         }
-
+        #region ExtractTextFromPdf
         private static string ExtractTextFromPdf(string path)
         {
             using (PdfReader reader = new PdfReader(path))
@@ -106,7 +116,7 @@ namespace ConsoleApp3
                 return text.ToString();
             }
         }
-
+        #endregion
 
         //public List<int> ReadPdfFile(string fileName, String searthText)
         //{

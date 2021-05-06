@@ -11,6 +11,7 @@
     <PackageReference Include="PdfSharp.Core" Version="1.0.0" />
     <PackageReference Include="PdfSharpCore" Version="1.2.16" />
     <PackageReference Include="PdfSharpCoreSignature" Version="1.0.0" />
+    <PackageReference Include="Spire.PDF" Version="7.4.13" />
   </ItemGroup>
 
 </Project>
